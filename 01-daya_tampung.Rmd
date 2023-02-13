@@ -1,0 +1,161 @@
+# Daya Tampung
+
+Daya tampung Universitas Sultan Ageng Tirtayasa untuk program D3, S1, S2, dan S3.
+
+## Tahun Akademik 2019/2020
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(readxl)
+dt <- read_excel("static/dt.xlsx")
+data <- dt[dt$TA == 2019, 1:4]
+names(data) <- c("Program Studi", "SNMPTN", "SBMPTN", "MANDIRI")
+library(janitor)
+library(kableExtra)
+library(downloadthis)
+data[is.na(data)] <- 0
+data <- adorn_totals(data, where = c("row", "col"), name = "Total")
+kable(data, row.names = F) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 3, " " = 1)) %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Keguruan dan Ilmu Pendidikan", 2, 20, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 21, 26, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 27, 31, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ekonomi dan Bisnis", 32, 35, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ilmu Sosial dan Ilmu Politik", 36, 38, label_row_css = "background-color: #666; color: #fff;")
+
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "dt 19-20",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+
+## Tahun Akademik 2020/2021
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+data <- dt[dt$TA == 2020, 1:4]
+names(data) <- c("Program Studi", "SNMPTN", "SBMPTN", "MANDIRI")
+data[is.na(data)] <- 0
+data <- adorn_totals(data, where = c("row", "col"), name = "Total")
+kable(data, row.names = F) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 3, " " = 1)) %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Keguruan dan Ilmu Pendidikan", 2, 19, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 20, 25, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 26, 29, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ekonomi dan Bisnis", 30, 33, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ilmu Sosial dan Ilmu Politik", 34, 36, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Kedokteran", 37, 40, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("D3", 41, 45, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pascasarjana", 46, 57, label_row_css = "background-color: #666; color: #fff;")
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "dt 20-21",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+## Tahun Akademik 2021/2022
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+data <- dt[dt$TA == 2021, 1:4]
+names(data) <- c("Program Studi", "SNMPTN", "SBMPTN", "MANDIRI")
+data[is.na(data)] <- 0
+data <- adorn_totals(data, where = c("row", "col"), name = "Total")
+kable(data, row.names = F) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 3, " " = 1)) %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Keguruan dan Ilmu Pendidikan", 2, 19, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 20, 26, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 27, 30, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ekonomi dan Bisnis", 31, 34, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ilmu Sosial dan Ilmu Politik", 35, 37, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Kedokteran", 38, 41, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("D3", 42, 46, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pascasarjana", 47, 59, label_row_css = "background-color: #666; color: #fff;")
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "dt 21-22",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+## Tahun Akademik 2022/2023
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+data <- dt[dt$TA == 2022, 1:4]
+names(data) <- c("Program Studi", "SNMPTN", "SBMPTN", "MANDIRI")
+data[is.na(data)] <- 0
+data <- adorn_totals(data, where = c("row", "col"), name = "Total")
+kable(data, row.names = F) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 3, " " = 1)) %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Keguruan dan Ilmu Pendidikan", 2, 19, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 20, 26, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 27, 31, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ekonomi dan Bisnis", 32, 35, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ilmu Sosial dan Ilmu Politik", 36, 38, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Kedokteran", 39, 42, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("D3", 43, 47, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pascasarjana", 48, 63, label_row_css = "background-color: #666; color: #fff;")
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "dt 22-23",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```

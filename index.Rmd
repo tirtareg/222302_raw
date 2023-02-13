@@ -1,0 +1,464 @@
+---
+title: 'Untirta dalam Angka: semester ganjil TA 2022/2023'
+author: "oleh Subbagian Registrasi dan Statistik"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+description: Untirta dalam angka dalam lingkup Biro Akademik, Kemahasiswaan, dan Perencanaan
+  (BAKP). The output format for this example is bookdown::gitbook.
+documentclass: book
+link-citations: yes
+bibliography:
+- book.bib
+- packages.bib
+site: bookdown::bookdown_site
+biblio-style: apalike
+---
+
+# Mahasiswa
+
+## Mahasiswa Baru
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+library(readxl)
+library(plotly)
+library(shiny)
+library(downloadthis)
+maba <- read_excel("static/maba.xlsx")
+d3 <- nrow(filter(maba, JENJANG == "D3"))
+s1 <- nrow(filter(maba, JENJANG == "S1"))
+s2 <- nrow(filter(maba, JENJANG == "S2"))
+s3 <- nrow(filter(maba, JENJANG == "S3"))
+ta <- "2022/2023"
+
+```
+
+Tahun 2022 Universitas Sultan Ageng Tirtayasa secara resmi menerima `r nrow(maba)` mahasiswa baru terdiri atas `r d3` mahasiswa D3, `r s1` mahasiswa S1, `r s2` mahasiswa S2, dan `r s3` mahasiswa S3. Berikut adalah statistik mahasiswa baru Universitas Sultan Ageng Tirtayasa tahun akademik `r ta`.
+
+> Mahasiswa Baru Berdasarkan Jenjang Studi
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+js <- maba %>%
+  group_by(JENJANG, JK) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JENJANG, values_from = total)
+names(js) <- c("Jenis Kelamin", "Diploma 3", "Strata 1", "Strata 2", "Strata 3")
+js <- adorn_totals(js, where = c("col", "row"), name = "Jumlah")
+kable(js) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F) %>%
+  add_header_above(c(" " = 1, "Jenjang Studi" = 4, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+js %>%
+  download_this(
+    output_name = "maba per jenjang",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Mahasiswa Baru Berdasarkan Jalur Masuk dan Jenis Kelamin.
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+jk <- maba %>%
+  group_by(JALUR, JK) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JALUR, values_from = total)
+jk[is.na(jk)] <- 0
+names(jk) <- c("Jenis Kelamin", "SNMPTN", "SBMPTN", "SMMPTN",
+               "ADIK", "UMM D3", "Prestasi", "Alih Jenjang", "S2", "S3")
+jk <- adorn_totals(jk, where = c("col", "row"), name = "Jumlah")
+kable(jk) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 10) %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 9, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+jk %>%
+  download_this(
+    output_name = "maba per jalur per jk",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Mahasiswa Baru Berdasarkan Jalur Masuk di Setiap Fakultas.
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+fak <- maba %>%
+  group_by(JALUR, FAKULTAS) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JALUR, values_from = total)
+names(fak) <- c("Fakultas", "SNMPTN", "SBMPTN", "SMMPTN",
+               "ADIK", "UMM D3", "Prestasi", "Alih Jenjang", "S2", "S3")
+fak[is.na(fak)] <- 0
+fak$Fakultas <- c("Hukum", "FKIP", "Teknik", "Pertanian",
+                  "FEB", "FISIP", "Kedokteran", "Pascasarjana")
+fak <- adorn_totals(fak, where = c("row", "col"), name = "Jumlah")
+kable(fak) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 10) %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 9, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+fak %>%
+  download_this(
+    output_name = "maba per jalur per fak",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Mahasiswa Baru Berdasarkan Jalur Masuk di Setiap Program Studi.
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+prod <- maba %>%
+  group_by(JALUR, FAKULTAS, `PROGRAM STUDI`) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JALUR, values_from = total) %>%
+  arrange(FAKULTAS)
+prod <- prod[,-1]
+prod[is.na(prod)] <- 0
+names(prod) <- c("Fakultas/Program Studi", "SNMPTN", "SBMPTN", "SMMPTN",
+               "ADIK", "UMM D3", "Prestasi", "Alih Jenjang", "S2", "S3")
+prod <- adorn_totals(prod, where = c("row", "col"), name = "Jumlah")
+kable(prod) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 10) %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 9, " " = 1)) %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("FKIP", 2, 19, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 20, 26, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 27, 31, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("FEB", 32, 39, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("FISIP", 40, 42, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pascasarjana", 43, 58, label_row_css = "background-color: #666; color: #fff;") %>%
+pack_rows("Kedokteran", 59, 62, label_row_css = "background-color: #666; color: #fff;")
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+prod %>%
+  download_this(
+    output_name = "maba per jalur per prod",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Mahasiswa Baru Berdasarkan Jalur Masuk dan Provinsi Asal Mahasiswa.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+prov <- maba %>%
+  group_by(JALUR, PROVINSI) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JALUR, values_from = total) %>%
+  arrange(PROVINSI)
+prov$PROVINSI <- prov$PROVINSI %>% replace_na("Tidak Ada Data")
+prov[is.na(prov)] <- 0
+names(prov) <- c("Provinsi", "SNMPTN", "SBMPTN", "SMMPTN",
+                 "ADIK", "UMM D3", "Alih Jenjang", "S2", "S3 Genap 2020", "S3 Ganjil 2021")
+prov <- adorn_totals(prov, where = c("row", "col"), name = "Jumlah")
+kable(prov) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 10) %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 9, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+prov %>%
+  download_this(
+    output_name = "maba per jalur per prov",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+<!--# Mahasiswa Baru (D3 dan S1) Berdasarkan Jalur Masuk dan Penghasilan Orang Tua. -->
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+eko <- maba %>%
+  filter(JALUR != "7_Pascasarjana") %>%
+  group_by(JALUR, PENGHASILAN) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JALUR, values_from = total) %>%
+  arrange(PENGHASILAN)
+eko[is.na(eko)] <- 0
+names(eko) <- c("Kategori Penghasilan", "SNMPTN", "SBMPTN", "SMMPTN",
+                 "UMM", "Alih Jenjang", "ADIK")
+eko$`Kategori Penghasilan` <- c("Tidak diketahui", "<= 500.000", "500.000 - 2.000.000",
+                                "2.000.000 - 3.500.000", "3.500.000 - 5.000.000",
+                                "5.000.000 - 10.000.000", "> 10.000.000")
+eko <- adorn_totals(eko, where = c("row", "col"), name = "Jumlah")
+kable(eko) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 11) %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 6, " " = 1))
+```
+
+<!--# Mahasiswa Baru (D3 dan S1) Berdasarkan Jalur Masuk dan Pendidikan Terakhir Orang Tua. -->
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pend <- maba %>%
+  filter(JALUR != "7_Pascasarjana") %>%
+  group_by(JALUR, Pendidikan) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = JALUR, values_from = total) %>%
+  arrange(Pendidikan)
+pend[is.na(pend)] <- 0
+names(pend) <- c("Pendidikan Terakhir", "SNMPTN", "SBMPTN", "SMMPTN",
+                 "UMM", "Alih Jenjang", "ADIK")
+pend$`Pendidikan Terakhir` <- c("Tidak diketahui", "Tidak tamat SD", "SD", "SLTP", "SLTA", "Diploma", "S1", "S2", "S3")
+pend <- adorn_totals(pend, where = c("row", "col"), name = "Jumlah")
+kable(pend) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, font_size = 11) %>%
+  add_header_above(c(" " = 1, "Jalur Masuk" = 6, " " = 1))
+```
+
+## Mahasiswa Aktif
+
+> Mahasiswa aktif di semester ganjil Tahun Akademik `r ta` di setiap jenjang studi
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+aktif <- read_excel("static/aktif.xlsx")
+
+aktif <- aktif %>%
+  mutate(fakultas = case_when(
+    fakultas == "HUKUM" ~ "1_HUKUM",
+    fakultas == "FKIP" ~ "2_FKIP",
+    fakultas == "TEKNIK" ~ "3_TEKNIK",
+    fakultas == "PERTANIAN" ~ "4_PERTANIAN",
+    fakultas == "FEB" ~ "5_FEB",
+    fakultas == "FISIP" ~ "6_FISIP",
+    fakultas == "PASCASARJANA" ~ "7_PASCASARJANA",
+    fakultas == "KEDOKTERAN" ~ "8_KEDOKTERAN"
+  ))
+
+data <- aktif %>%
+  group_by(jenjang, jk) %>%
+  summarize(total = n()) %>%
+  pivot_wider(names_from = jenjang, values_from = total)
+names(data) <- c("Jenis Kelamin", "Diploma 3", "Strata 1", "Strata 2", "Strata 3")
+data <- adorn_totals(data, where = c("col", "row"), name = "Jumlah")
+kable(data) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F) %>%
+  add_header_above(c(" " = 1, "Jenjang Studi" = 4, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "mhs aktif per jenjang",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Mahasiswa aktif di semester ganjil Tahun Akademik `r ta` per Fakultas
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+data <- aktif %>%
+  group_by(jk, fakultas) %>%
+  summarise(n = n()) %>%
+  pivot_wider(names_from = jk, values_from = n)
+
+names(data) <- c("Fakultas", "Laki-Laki", "Perempuan")
+data$Fakultas <- c("Hukum", "FKIP", "Teknik", "Pertanian", "FEB", "FISIP", "Pascasarjana", "Kedokteran")
+### agar sesuai urutan dibuat faktor dengan level yang berurutan
+data$Fakultas <- factor(data$Fakultas, levels = data[["Fakultas"]])
+
+div(plot_ly(data, x = ~Fakultas, y = ~`Laki-Laki`, type = 'bar', name = "Laki-Laki") %>% 
+  add_trace(y = ~Perempuan, name = "Perempuan") %>%
+  layout(yaxis = list(title = ' '), barmode = 'group'), align = "center")
+
+
+
+data <- aktif %>%
+  group_by(fakultas, angkatan) %>%
+  summarise(n = n()) %>%
+  pivot_wider(names_from = angkatan, values_from = n)
+
+data[is.na(data)] <- 0
+data$fakultas <- c("Hukum", "FKIP", "Teknik", "Pertanian", "FEB", "FISIP", "Pascasarjana", "Kedokteran")
+colnames(data)[1] <- "Fakultas"
+data <- adorn_totals(data, where = c("col", "row"), name = "Jumlah")
+
+kable(data) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Angkatan" = 7, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "mhs aktif per angkatan per fakultas",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Mahasiswa aktif di semester ganjil Tahun Akademik `r ta` per Program Studi
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+data <- aktif %>%
+  group_by(fakultas, prodi, jenjang, angkatan) %>%
+  summarise(n = n()) %>%
+  pivot_wider(names_from = angkatan, values_from = n)
+
+data <- data[, -1]
+data[is.na(data)] <- 0
+colnames(data)[1] <- "Program Studi"
+colnames(data)[2] <- "Jenjang"
+data <- adorn_totals(data, where = c("col", "row"), name = "Jumlah")
+
+kable(data) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down", font_size = 12) %>%
+  add_header_above(c(" " = 2, "Angkatan" = 7, " " = 1)) %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("FKIP", 2, 19, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 20, 26, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 27, 31, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("FEB", 32, 39, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("FISIP", 40, 42, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pascasarjana", 43, 58, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Kedokteran", 59, 63, label_row_css = "background-color: #666; color: #fff;")
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "mhs_aktif",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+$~$
+
+## Mahasiswa tidak aktif
+
+Mahasiswa tidak aktif adalah mahasiswa yang tidak melakukan registrasi dan pengisian Rencana Studi. Mahasiswa tidak aktif bisa disebabkan karena yang bersangkutan mengambil cuti kuliah atau dicutikan (tidak melakukan registrasi pemberitahuan resmi). Berikut ini adalah rekapitulasi mahasiswa tidak aktif baik cuti maupun dicutikan.
+
+> Berikut ini adalah rekapitulasi mahasiswa cuti pada semester ganjil Tahun Akademik `r ta`
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Mahasiswa tidak aktif adalah mahasiswa yang tidak melakukan registrasi dan pengisian Rencana Studi. Mahasiswa tidak aktif bisa disebabkan karena yang bersangkutan mengambil cuti kuliah atau dicutikan (tidak melakukan registrasi pemberitahuan resmi). Berikut ini adalah rekapitulasi mahasiswa tidak aktif baik cuti maupun dicutikan.
+
+data <- read_excel("static/cuti.xlsx")
+data[is.na(data)] <- 0
+data$Fakultas <- c("Hukum", "FKIP", "Teknik", "Pertanian", "FEB", "FISIP", "Pascasarjana", "Kedokteran")
+#names(data) <- c("Fakultas", "2016", "2017", "2018", "2019", "2020")
+data <- adorn_totals(data, where = c("row", "col"), name = "Jumlah")
+kable(data) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Angkatan" = 5, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "mhs cuti",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+$~$
+
+> Berikut ini adalah rekapitulasi mahasiswa dicutikan pada semester ganjil Tahun Akademik `r ta`
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+cutikan <- read_excel("static/dicutikan.xlsx")
+cutikan[is.na(cutikan)] <- 0
+#names(cutikan) <- c("Fakultas", "2015", "2016", "2017", "2018", "2019", "2020")
+cutikan <- adorn_totals(cutikan, where = c("row", "col"), name = "Jumlah")
+kable(cutikan) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "Angkatan" = 6, " " = 1))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+cutikan %>%
+  download_this(
+    output_name = "mhs dicutikan",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```

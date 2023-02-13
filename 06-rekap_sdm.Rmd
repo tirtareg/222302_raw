@@ -1,0 +1,120 @@
+# Rekapitulasi SDM
+
+> Sebaran SDM berdasarkan jenis kelamin
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#library(downloadthis)
+library(tidyverse)
+library(plotly)
+library(shiny)
+library(janitor)
+library(kableExtra)
+library(readxl)
+
+sdm <- NULL
+data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_dosen_pns.xlsx")
+sdm <- rbind(sdm, data)
+data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_dosen_non_pns.xlsx")
+sdm <- rbind(sdm, data)
+data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_tendik_non_pns.xlsx")
+sdm <- rbind(sdm, data)
+data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_tendik_pns.xlsx")
+sdm <- rbind(sdm, data)
+
+
+sdm$STATUS <- factor(sdm$STATUS, levels = c("Dosen PNS", "Dosen non PNS", "Tendik PNS", "Tendik non PNS"))
+
+data <- sdm %>%
+  group_by(JK) %>%
+  summarize(banyak = n())
+data$JK <- c("Laki-Laki", "Perempuan")
+
+div(plot_ly(type = "pie", labels = data$JK, values = data$banyak,
+        textinfo = "label+percent",
+        insidetextorientation = "radial"), align = "center")
+
+data <- sdm %>%
+  group_by(STATUS, JK) %>%
+  summarize(total = n())
+data <- data %>%
+  pivot_wider(names_from = JK, values_from = total)
+names(data) <- c("SDM", "Laki-Laki", "Perempuan")
+data$SDM <- c("Dosen PNS", "Dosen non PNS", "Tendik PNS", "Tendik non PNS")
+
+data$SDM <- factor(data$SDM, levels = data[["SDM"]])
+
+# diagram batang
+
+div(plot_ly(data, x = ~SDM, y = ~`Laki-Laki`, type = 'bar', name = "Laki-Laki") %>% 
+      add_trace(y = ~Perempuan, name = "Perempuan") %>%
+      layout(yaxis = list(title = ' '), barmode = 'group'), align = "center")
+```
+
+> Sebaran SDM berdasarkan tingkat pendidikan
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+data <- sdm %>%
+  group_by(PENDIDIKAN, STATUS) %>%
+  summarize(total = n())
+data <- data %>%
+  pivot_wider(names_from = STATUS, values_from = total)
+data[is.na(data)] <- 0
+data$PENDIDIKAN <- c("S3", "S2", "Spesialis", "S1 Profesi", "S1",
+                   "Diploma", "SLTA", "SLTP", "SD")
+data <- adorn_totals(data, where = c("row", "col"), name = "Jumlah")
+kable(data) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "SDM" = 4, " " = 1))
+```
+
+$~$
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "sdm pendidikan",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+
+$~$
+
+> Sebaran SDM di setiap Unit Kerja
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+data <- sdm %>%
+  group_by(FAKULTAS, STATUS) %>%
+  summarize(total = n())
+data <- data %>%
+  pivot_wider(names_from = STATUS, values_from = total)
+data[is.na(data)] <- 0
+x <- unique(data$FAKULTAS)
+data$FAKULTAS <- gsub('[0-9, "_"]+', '', x)
+names(data) <- c("Unit Kerja", "Dosen PNS", "Dosen non PNS", "Tendik PNS", "Tendik non PNS")
+data <- adorn_totals(data, where = c("row", "col"), name = "Jumlah")
+kable(data) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 1, "SDM" = 4, " " = 1))
+```
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+data %>%
+  download_this(
+    output_name = "sdm unit kerja",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```

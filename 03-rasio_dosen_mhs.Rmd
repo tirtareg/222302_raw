@@ -1,0 +1,42 @@
+# Rasio Dosen dan Mahasiswa
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(readxl)
+library(downloadthis)
+rasio <- read_excel("static/rasio.xlsx")
+
+```
+
+Secara keseluruhan, rasio dosen dan mahasiswa di untirta adalah 1 : `r round(sum(rasio$mahasiswa)/sum(rasio$dosen, na.rm = T), 0)`. Rasio dosen dan mahasiswa ideal untuk rumpun sosial adalah 1 : 45 dan untuk rumpun sains adalah 1 : 30. Berikut adalah rasio dosen dan mahasiswa Universitas Sultan Ageng Tirtayasa di setiap Program Studi.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+names(rasio) <- c("Program Studi", "Jenjang", "Mahasiswa", "Dosen", "Rasio", "Rasio Ideal")
+library(kableExtra)
+kable(rasio, row.names = F) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  pack_rows("Hukum", 1, 1, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Keguruan dan Ilmu Pendidikan", 2, 19, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 20, 26, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 27, 31, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ekonomi dan Bisnis", 32, 39, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ilmu Sosial dan Ilmu Politik", 40, 42, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Kedokteran", 43, 47, label_row_css = "background-color: #666; color: #fff;")
+
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+rasio %>%
+  download_this(
+    output_name = "rasio dosen mhs",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+

@@ -1,0 +1,41 @@
+# Lulusan
+
+Rekapitulasi lulusan Universitas Sultan Ageng Tirtayasa jenjang Diploma, Sarjana, dan Pascasarjana sampai dengan September 2022 (*sumber: Lampiran SK Lulusan per September 2022*).
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(janitor)
+library(kableExtra)
+library(readxl)
+library(downloadthis)
+lulusan <- read_excel("static/lulusan.xlsx")
+lulusan[is.na(lulusan)] <- 0
+names(lulusan) <- c("Program Studi", "Jenjang", "s.d.2017", "2018", "2019", "2020", "2021", "2022")
+lulusan <- adorn_totals(lulusan, where = c("row", "col"), name = "Jumlah")
+kable(lulusan, row.names = F) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F,
+                latex_options = "scale_down") %>%
+  add_header_above(c(" " = 2, "Tahun Kelulusan" = 6, " " = 1)) %>%
+  pack_rows("Pascasarjana", 1, 11, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Hukum", 12, 12, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Keguruan dan Ilmu Pendidikan", 13, 34, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Teknik", 35, 42, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Pertanian", 43, 45, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ekonomi dan Bisnis", 46, 53, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Ilmu Sosial dan Ilmu Politik", 54, 56, label_row_css = "background-color: #666; color: #fff;") %>%
+  pack_rows("Kedokteran", 57, 60, label_row_css = "background-color: #666; color: #fff;")
+
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+### menambahkan tombol Download data untuk tabel di atas
+
+lulusan %>%
+  download_this(
+    output_name = "rekap lulusan",
+    output_extension = ".xlsx",
+    button_label = "Download data",
+    button_type = "warning",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```

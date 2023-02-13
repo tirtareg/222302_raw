@@ -1,0 +1,5 @@
+book_filename: "UDA_1920_02"
+delete_merged_file: TRUE
+language:
+  ui:
+    chapter_name: "Bagian "
