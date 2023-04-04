@@ -1,5 +1,5 @@
 ---
-title: 'Untirta dalam Angka: semester ganjil TA 2022/2023'
+title: 'Untirta dalam Angka: semester genap TA 2022/2023'
 author: "oleh Subbagian Registrasi dan Statistik"
 date: "`r Sys.Date()`"
 output:
@@ -34,6 +34,7 @@ s1 <- nrow(filter(maba, JENJANG == "S1"))
 s2 <- nrow(filter(maba, JENJANG == "S2"))
 s3 <- nrow(filter(maba, JENJANG == "S3"))
 ta <- "2022/2023"
+sem <- "genap"
 
 ```
 
@@ -258,7 +259,7 @@ kable(pend) %>%
 
 ## Mahasiswa Aktif
 
-> Mahasiswa aktif di semester ganjil Tahun Akademik `r ta` di setiap jenjang studi
+> Mahasiswa aktif di semester `r sem` Tahun Akademik `r ta` di setiap jenjang studi
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 aktif <- read_excel("static/aktif.xlsx")
@@ -303,7 +304,7 @@ data %>%
 
 $~$
 
-> Mahasiswa aktif di semester ganjil Tahun Akademik `r ta` per Fakultas
+> Mahasiswa aktif di semester `r sem` Tahun Akademik `r ta` per Fakultas
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -356,7 +357,7 @@ data %>%
 
 $~$
 
-> Mahasiswa aktif di semester ganjil Tahun Akademik `r ta` per Program Studi
+> Mahasiswa aktif di semester `r sem` Tahun Akademik `r ta` per Program Studi
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 data <- aktif %>%
@@ -403,7 +404,7 @@ $~$
 
 Mahasiswa tidak aktif adalah mahasiswa yang tidak melakukan registrasi dan pengisian Rencana Studi. Mahasiswa tidak aktif bisa disebabkan karena yang bersangkutan mengambil cuti kuliah atau dicutikan (tidak melakukan registrasi pemberitahuan resmi). Berikut ini adalah rekapitulasi mahasiswa tidak aktif baik cuti maupun dicutikan.
 
-> Berikut ini adalah rekapitulasi mahasiswa cuti pada semester ganjil Tahun Akademik `r ta`
+> Berikut ini adalah rekapitulasi mahasiswa cuti pada semester `r sem` Tahun Akademik `r ta`
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 # Mahasiswa tidak aktif adalah mahasiswa yang tidak melakukan registrasi dan pengisian Rencana Studi. Mahasiswa tidak aktif bisa disebabkan karena yang bersangkutan mengambil cuti kuliah atau dicutikan (tidak melakukan registrasi pemberitahuan resmi). Berikut ini adalah rekapitulasi mahasiswa tidak aktif baik cuti maupun dicutikan.
@@ -435,7 +436,7 @@ data %>%
 ```
 $~$
 
-> Berikut ini adalah rekapitulasi mahasiswa dicutikan pada semester ganjil Tahun Akademik `r ta`
+> Berikut ini adalah rekapitulasi mahasiswa dicutikan pada semester `r sem` Tahun Akademik `r ta`
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 cutikan <- read_excel("static/dicutikan.xlsx")

@@ -9,8 +9,8 @@ library(shiny)
 library(readxl)
 library(plotly)
 library(downloadthis)
-dos_pns <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_dosen_pns.xlsx")
-dos_non <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_dosen_non_pns.xlsx")
+dos_pns <- read_excel("static/SDM_dosen_pns.xlsx")
+dos_non <- read_excel("static/SDM_dosen_non_pns.xlsx")
 ```
 
 

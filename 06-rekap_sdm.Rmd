@@ -3,7 +3,7 @@
 > Sebaran SDM berdasarkan jenis kelamin
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-#library(downloadthis)
+library(downloadthis)
 library(tidyverse)
 library(plotly)
 library(shiny)
@@ -12,13 +12,13 @@ library(kableExtra)
 library(readxl)
 
 sdm <- NULL
-data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_dosen_pns.xlsx")
+data <- read_excel("static/SDM_dosen_pns.xlsx")
 sdm <- rbind(sdm, data)
-data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_dosen_non_pns.xlsx")
+data <- read_excel("static/SDM_dosen_non_pns.xlsx")
 sdm <- rbind(sdm, data)
-data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_tendik_non_pns.xlsx")
+data <- read_excel("static/SDM_tendik_non_pns.xlsx")
 sdm <- rbind(sdm, data)
-data <- read_excel("G:/My Drive/# REGISTRASI DAN STATISTIK/Website/222301/static/SDM_tendik_pns.xlsx")
+data <- read_excel("static/SDM_tendik_pns.xlsx")
 sdm <- rbind(sdm, data)
 
 
